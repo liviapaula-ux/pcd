@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa de Saúde PCD — iFood</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --red: #EA1D2C;
+    --red-dark: #B8151F;
+    --red-light: #FDE8EA;
+    --ink: #1A1A1A;
+    --ink-mid: #444444;
+    --ink-light: #767676;
+    --surface: #F7F5F2;
+    --white: #FFFFFF;
+    --border: #E5E2DD;
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo .dot {
+    width: 24px; height: 24px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-logo .dot span {
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .nav-tab {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-light);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .nav-tab:hover { background: var(--surface); color: var(--ink); }
+  .nav-tab.active { background: var(--red); color: white; }
+
+  .nav-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-light);
+  }
+
+  /* ── PAGES ── */
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 56px;
+  }
+  .page.active { display: block; }
+
+  /* ── PAGE 1: CAPA ── */
+  .cover {
+    min-height: calc(100vh - 56px);
+    display: grid;
+    grid-template-columns: 1fr 480px;
+  }
+
+  .cover-left {
+    background: var(--ink);
+    padding: 80px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cover-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(234,29,44,0.15);
+    border: 1px solid rgba(234,29,44,0.3);
+    color: #FF6B7A;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-bottom: 48px;
+  }
+
+  .cover-headline {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .cover-headline em {
+    color: var(--red);
+    font-style: normal;
+  }
+
+  .cover-subtitle {
+    font-size: 17px;
+    color: rgba(255,255,255,0.55);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 56px;
+    font-weight: 300;
+  }
+
+  .cover-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .cover-stat {
+    background: rgba(255,255,255,0.04);
+    padding: 24px 20px;
+  }
+
+  .cover-stat-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .cover-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+  }
+
+  .cover-right {
+    background: var(--red);
+    padding: 80px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .cover-right-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .cover-pillar {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .cover-pillar-num {
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .cover-pillar-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 3px;
+  }
+
+  .cover-pillar-text span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.4;
+  }
+
+  .cover-cta {
+    margin-top: 8px;
+    background: white;
+    color: var(--red);
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .cover-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+  /* ── INNER PAGES ── */
+  .inner-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  .page-header {
+    margin-bottom: 48px;
+  }
+
+  .page-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+
+  .page-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .page-desc {
+    font-size: 16px;
+    color: var(--ink-light);
+    max-width: 620px;
+    font-weight: 300;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .card-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .card-body {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── PAGE 2: CONTEXTO ── */
+  .context-hero {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .context-hero-left h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .context-hero-left p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .context-nums {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .context-num {
+    background: rgba(255,255,255,0.04);
+    padding: 22px 18px;
+  }
+
+  .context-num-val {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.03em;
+  }
+
+  .context-num-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+  }
+
+  .alert-box {
+    background: var(--red-light);
+    border: 1px solid rgba(234,29,44,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .alert-icon {
+    width: 36px; height: 36px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .alert-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--red-dark);
+    margin-bottom: 4px;
+  }
+
+  .alert-text p {
+    font-size: 13px;
+    color: #7A1920;
+    line-height: 1.55;
+  }
+
+  /* ── PAGE 3: ELEGIBILIDADE ── */
+  .eligibility-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .elig-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .elig-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .elig-badge {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .elig-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .elig-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .elig-item {
+    font-size: 12px;
+    color: var(--ink-mid);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.45;
+  }
+
+  .elig-item::before {
+    content: '·';
+    color: var(--ink-light);
+    flex-shrink: 0;
+    margin-top: -1px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .not-box {
+    background: #F5F5F5;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-top: 24px;
+  }
+
+  .not-box-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .not-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .not-item {
+    font-size: 12px;
+    color: var(--ink-mid);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .laudo-box {
+    background: var(--amber-light);
+    border: 1px solid rgba(186,117,23,0.25);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 20px;
+  }
+
+  .laudo-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .laudo-text {
+    font-size: 13px;
+    color: #5A3D08;
+    line-height: 1.6;
+  }
+
+  /* ── PAGE 4: PROGRAMA ── */
+  .program-pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .pillar-card {
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid transparent;
+  }
+
+  .pillar-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+
+  .pillar-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .pillar-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .pillar-item {
+    font-size: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    opacity: 0.8;
+  }
+
+  .pillar-item::before {
+    content: '→';
+    flex-shrink: 0;
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  .gatekeeper-box {
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 32px;
+  }
+
+  .gatekeeper-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .gatekeeper-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    margin-bottom: 28px;
+  }
+
+  .gatekeeper-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .gk-step {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .gk-step-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 6px;
+  }
+
+  .gk-step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+  }
+
+  .gk-step-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+  }
+
+  .gk-arrow {
+    color: rgba(255,255,255,0.25);
+    font-size: 18px;
+    padding: 0 10px;
+    flex-shrink: 0;
+  }
+
+  .gk-step.highlight {
+    background: rgba(234,29,44,0.25);
+    border-color: rgba(234,29,44,0.4);
+  }
+
+  /* ── PAGE 5: ETAPAS ── */
+  .steps-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step-row {
+    display: grid;
+    grid-template-columns: 160px 40px 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .step-time {
+    text-align: right;
+    padding: 28px 24px 28px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 32px;
+  }
+
+  .step-time-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-light);
+  }
+
+  .step-time-sub {
+    font-size: 11px;
+    color: var(--border);
+    margin-top: 2px;
+  }
+
+  .step-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .step-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 24px;
+    z-index: 1;
+  }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  .step-line.last { display: none; }
+
+  .step-content {
+    padding: 24px 0 24px 24px;
+  }
+
+  .step-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+
+  .step-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  .step-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .step-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 12px;
+  }
+
+  .step-action {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+
+  .step-action-icon {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── PAGE 6: MÉTRICAS ── */
+  .metrics-top {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-align: center;
+  }
+
+  .metric-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .metric-val {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .metric-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-bottom: 3px;
+  }
+
+  .metric-desc {
+    font-size: 11px;
+    color: var(--ink-light);
+    line-height: 1.4;
+  }
+
+  .kpi-table {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .kpi-table-head {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    gap: 16px;
+  }
+
+  .kpi-table-head span {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-light);
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .kpi-row:last-child { border-bottom: none; }
+
+  .kpi-row:hover { background: var(--surface); }
+
+  .kpi-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .kpi-dim {
+    font-size: 11px;
+    color: var(--ink-light);
+    margin-top: 2px;
+  }
+
+  .kpi-freq, .kpi-meta {
+    font-size: 13px;
+    color: var(--ink-mid);
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  .kpi-status {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── PAGINATION ── */
+  .page-footer {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .page-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+
+  .page-nav-btn:hover { border-color: var(--ink); }
+  .page-nav-btn.primary { background: var(--ink); color: white; border-color: var(--ink); }
+  .page-nav-btn.primary:hover { background: #333; }
+  .page-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .page-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .page-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .page-dot.active { background: var(--red); width: 20px; border-radius: 4px; }
+
+  /* ── UTIL ── */
+  .tag-red { background: var(--red-light); color: var(--red-dark); }
+  .tag-teal { background: var(--teal-light); color: #085041; }
+  .tag-amber { background: var(--amber-light); color: #633806; }
+  .tag-purple { background: var(--purple-light); color: #3C3489; }
+  .tag-coral { background: var(--coral-light); color: #712B13; }
+  .tag-blue { background: var(--blue-light); color: #0C447C; }
+  .tag-gray { background: #F1EFE8; color: #444441; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="dot"><span>iF</span></div>
+    Programa PCD · Saúde
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goTo(0)">Início</button>
+    <button class="nav-tab" onclick="goTo(1)">Contexto</button>
+    <button class="nav-tab" onclick="goTo(2)">Elegibilidade</button>
+    <button class="nav-tab" onclick="goTo(3)">Programa</button>
+    <button class="nav-tab" onclick="goTo(4)">Etapas</button>
+    <button class="nav-tab" onclick="goTo(5)">Métricas</button>
+  </div>
+  <div class="nav-progress">
+    <span id="page-label">Página 1 de 6</span>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — CAPA
+════════════════════════════════════════ -->
+<div class="page active" id="p0">
+  <div class="cover">
+    <div class="cover-left">
+      <div>
+        <div class="cover-tag">
+          ♥ Programa de Saúde Inclusiva
+        </div>
+        <h1 class="cover-headline">
+          Saúde PCD<br><em>iFood</em>
+        </h1>
+        <p class="cover-subtitle">
+          Um programa dedicado a PCDs que une autodeclaração segura, acompanhamento próximo e prevenção ativa — reduzindo sinistralidade e colocando as pessoas no centro do cuidado.
+        </p>
+      </div>
+      <div class="cover-stats">
+        <div class="cover-stat">
+          <div class="cover-stat-num">100%</div>
+          <div class="cover-stat-label">isenção de coparticipação para PCDs declarados</div>
+        </div>
+        <div class="cover-stat">
+          <div class="cover-stat-num">↓ Sinistro</div>
+          <div class="cover-stat-label">meta via prevenção e navegação ativa</div>
+        </div>
+        <div class="cover-stat">
+          <div class="cover-stat-num">3 Pilares</div>
+          <div class="cover-stat-label">Confiança · Cuidado · Conexão</div>
+        </div>
+      </div>
+    </div>
+    <div class="cover-right">
+      <div>
+        <div class="cover-right-title">O que você vai encontrar</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+          <div class="cover-pillar">
+            <div class="cover-pillar-num">1</div>
+            <div class="cover-pillar-text">
+              <strong>Contexto e desafio</strong>
+              <span>Por que PCDs subdeclaram e o custo disso para todos</span>
+            </div>
+          </div>
+          <div class="cover-pillar">
+            <div class="cover-pillar-num">2</div>
+            <div class="cover-pillar-text">
+              <strong>Quem é elegível</strong>
+              <span>Tipos de deficiência, laudo biopsicossocial e enquadramento legal</span>
+            </div>
+          </div>
+          <div class="cover-pillar">
+            <div class="cover-pillar-num">3</div>
+            <div class="cover-pillar-text">
+              <strong>Pilares do programa</strong>
+              <span>Confiança, cuidado dedicado e comunidade de pertencimento</span>
+            </div>
+          </div>
+          <div class="cover-pillar">
+            <div class="cover-pillar-num">4</div>
+            <div class="cover-pillar-text">
+              <strong>Jornada e etapas</strong>
+              <span>Da autodeclaração ao acompanhamento contínuo com care manager</span>
+            </div>
+          </div>
+          <div class="cover-pillar">
+            <div class="cover-pillar-num">5</div>
+            <div class="cover-pillar-text">
+              <strong>Métricas e ROI</strong>
+              <span>KPIs, cadência de medição e como demonstrar resultado</span>
+            </div>
+          </div>
+        </div>
+        <button class="cover-cta" onclick="goTo(1)">Começar → Contexto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — CONTEXTO
+════════════════════════════════════════ -->
+<div class="page" id="p1">
+  <div class="inner-page">
+    <div class="page-header">
+      <div class="page-eyebrow">◎ Contexto</div>
+      <h1 class="page-title">O desafio que precisa ser resolvido</h1>
+      <p class="page-desc">Muitos colaboradores PCDs não se declaram. Isso priva as pessoas de benefícios reais e impede o iFood de gerir a saúde desse grupo de forma eficaz.</p>
+    </div>
+
+    <div class="context-hero">
+      <div class="context-hero-left">
+        <h2>Por que PCDs não se autodeclaram?</h2>
+        <p>O problema não está na cultura do iFood — está no estigma social que o colaborador traz de fora. A pessoa teme que o "rótulo" afete sua avaliação de performance, sua relação com o gestor ou sua segurança no emprego. Mesmo que nada disso seja real aqui, o medo é real.</p>
+      </div>
+      <div class="context-nums">
+        <div class="context-num">
+          <div class="context-num-val">≈23%</div>
+          <div class="context-num-label">da pop. brasileira tem alguma deficiência (IBGE)</div>
+        </div>
+        <div class="context-num">
+          <div class="context-num-val">R$0</div>
+          <div class="context-num-label">copart. para PCDs declarados no iFood</div>
+        </div>
+        <div class="context-num">
+          <div class="context-num-val">+90%</div>
+          <div class="context-num-label">razão de sinistralidade sem gestão ativa</div>
+        </div>
+        <div class="context-num">
+          <div class="context-num-val">↑ Curto</div>
+          <div class="context-num-label">uso do plano sobe antes de cair com o programa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <div class="alert-icon">⚠</div>
+      <div class="alert-text">
+        <strong>O custo real da subdeclaração</strong>
+        <p>PCDs sem acompanhamento tendem a usar o plano de forma emergencial — pronto-socorro em vez de consulta eletiva, exames duplicados, condições crônicas não controladas que evoluem para internação. O programa existe para mudar essa lógica: prevenção ativa custa muito menos que sinistro de alto custo.</p>
+      </div>
+    </div>
+
+    <div class="section-label">O que o iFood já tem de vantagem</div>
+    <div class="card-grid-3">
+      <div class="card">
+        <div class="card-icon" style="background:var(--teal-light);color:var(--teal);">✓</div>
+        <div class="card-title">Isenção de coparticipação</div>
+        <div class="card-body">PCDs declarados já têm zero coparticipação. É a alavanca financeira mais poderosa para converter subdeclarados.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:var(--purple-light);color:var(--purple);">🏛</div>
+        <div class="card-title">Cultura de inclusão</div>
+        <div class="card-body">iFood tem histórico e compromisso público com D&I. Isso reduz o risco percebido de discriminação por quem se declarar.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:var(--blue-light);color:var(--blue);">⚙</div>
+        <div class="card-title">Plano de saúde estruturado</div>
+        <div class="card-body">Bradesco e Unimed com diferentes níveis de cobertura — base para construir jornadas de cuidado por tipo de deficiência.</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer">
+    <button class="page-nav-btn" onclick="goTo(0)">← Início</button>
+    <div class="page-dots" id="dots1"></div>
+    <button class="page-nav-btn primary" onclick="goTo(2)">Elegibilidade →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — ELEGIBILIDADE
+════════════════════════════════════════ -->
+<div class="page" id="p2">
+  <div class="inner-page">
+    <div class="page-header">
+      <div class="page-eyebrow">◎ Elegibilidade</div>
+      <h1 class="page-title">Quem é PCD segundo a lei</h1>
+      <p class="page-desc">Desde a Lei Brasileira de Inclusão (LBI — Lei 13.146/2015), a análise deixou de ser puramente médica para se tornar funcional e biopsicossocial.</p>
+    </div>
+
+    <div class="eligibility-grid">
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:var(--blue-light);color:var(--blue);font-size:20px;">♿</div>
+          <div class="elig-name">Deficiência Física</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Paraplegia e tetraplegia / paraparesia e tetraparesia</li>
+          <li class="elig-item">Monoplegia, hemiplegia e suas variantes</li>
+          <li class="elig-item">Amputação ou ausência de membro</li>
+          <li class="elig-item">Membros com deformidade congênita ou adquirida</li>
+          <li class="elig-item">Ostomia e nanismo</li>
+        </ul>
+      </div>
+
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:var(--teal-light);color:var(--teal);font-size:20px;">👂</div>
+          <div class="elig-name">Deficiência Auditiva</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Perda bilateral de 41 dB ou mais (audiograma em 500, 1k, 2k, 3kHz)</li>
+          <li class="elig-item">Surdez unilateral geralmente <strong>não</strong> se enquadra na Lei de Cotas</li>
+          <li class="elig-item">Grau da perda + impacto funcional são determinantes</li>
+        </ul>
+      </div>
+
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:var(--amber-light);color:var(--amber);font-size:20px;">👁</div>
+          <div class="elig-name">Deficiência Visual</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Cegueira: acuidade ≤ 0,05 no melhor olho com correção</li>
+          <li class="elig-item">Baixa visão: acuidade entre 0,3 e 0,05 com correção</li>
+          <li class="elig-item">Redução severa do campo visual: somatória ≤ 60°</li>
+        </ul>
+      </div>
+
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:var(--purple-light);color:var(--purple);font-size:20px;">🧠</div>
+          <div class="elig-name">Deficiência Intelectual</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Funcionamento intelectual abaixo da média identificado antes dos 18 anos</li>
+          <li class="elig-item">Limitações em 2 ou mais áreas: comunicação, habilidades sociais, trabalho, lazer, cuidado pessoal</li>
+        </ul>
+      </div>
+
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:var(--coral-light);color:var(--coral);font-size:20px;">🧩</div>
+          <div class="elig-name">TEA — Transtorno do Espectro Autista</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Incluído expressamente pela Lei 12.764/2012 (Lei Berenice Piana)</li>
+          <li class="elig-item">Considerado PcD para todos os efeitos legais, incluindo Lei de Cotas</li>
+          <li class="elig-item">Nível de suporte necessário influencia a avaliação biopsicossocial</li>
+        </ul>
+      </div>
+
+      <div class="elig-card">
+        <div class="elig-header">
+          <div class="elig-badge" style="background:#F1EFE8;color:#444441;font-size:20px;">⚕</div>
+          <div class="elig-name">Deficiência Psicossocial & Múltipla</div>
+        </div>
+        <ul class="elig-items">
+          <li class="elig-item">Transtornos mentais com impedimento funcional comprovado (esquizofrenia, transtorno bipolar grave, depressão severa)</li>
+          <li class="elig-item">Reabilitados do INSS com Certificado de Reabilitação Profissional</li>
+          <li class="elig-item">Deficiência múltipla: duas ou mais das categorias acima</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="not-box">
+      <div class="not-box-title">Geralmente não se enquadra</div>
+      <div class="not-items">
+        <div class="not-item"><span style="color:#E24B4A;">✕</span> TDAH isolado</div>
+        <div class="not-item"><span style="color:#E24B4A;">✕</span> Hérnia de disco sem sequela permanente</div>
+        <div class="not-item"><span style="color:#E24B4A;">✕</span> Hipertensão / diabetes sem impedimento funcional</div>
+        <div class="not-item"><span style="color:#E24B4A;">✕</span> Surdez unilateral</div>
+        <div class="not-item"><span style="color:#E24B4A;">✕</span> Varizes e doenças sem sequela funcional</div>
+      </div>
+    </div>
+
+    <div class="laudo-box">
+      <div class="laudo-title">⚠ Ponto crítico sobre laudos</div>
+      <div class="laudo-text">Ter um CID no laudo não é suficiente. A análise é <strong>biopsicossocial</strong>: o auditor-fiscal verifica se a condição gera barreiras reais de participação na sociedade, conforme a Instrução Normativa MTP nº 2/2021. Oriente os colaboradores a buscarem avaliação completa — não apenas o CID isolado.</div>
+    </div>
+  </div>
+  <div class="page-footer">
+    <button class="page-nav-btn" onclick="goTo(1)">← Contexto</button>
+    <div class="page-dots" id="dots2"></div>
+    <button class="page-nav-btn primary" onclick="goTo(3)">Programa →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 4 — PROGRAMA
+════════════════════════════════════════ -->
+<div class="page" id="p3">
+  <div class="inner-page">
+    <div class="page-header">
+      <div class="page-eyebrow">◎ Programa</div>
+      <h1 class="page-title">iFood Cuida — Jornada PCD</h1>
+      <p class="page-desc">Três pilares que se reforçam: sem confiança não há adesão, sem cuidado não há resultado, sem comunidade não há sustentação.</p>
+    </div>
+
+    <div class="program-pillars">
+      <div class="pillar-card" style="background:var(--teal-light);border-color:rgba(29,158,117,0.2);">
+        <div class="pillar-num" style="color:var(--teal);">Pilar 01</div>
+        <div class="pillar-title" style="color:#04342C;">🔐 Confiança</div>
+        <ul class="pillar-items" style="color:#085041;">
+          <li class="pillar-item">Comunicação focada em benefício, não em rótulo: "Destrave seus benefícios exclusivos"</li>
+          <li class="pillar-item">Alavanca financeira: calcular e comunicar o valor médio anual economizado em coparticipação</li>
+          <li class="pillar-item">Garantia LGPD: dado de saúde sigiloso — liderança direta não acessa prontuário</li>
+          <li class="pillar-item">Embaixadores internos: depoimentos de PCDs engajados (maior poder que comunicação corporativa)</li>
+          <li class="pillar-item">Canal de declaração contínuo e digital — não apenas evento anual</li>
+        </ul>
+      </div>
+
+      <div class="pillar-card" style="background:var(--purple-light);border-color:rgba(127,119,221,0.2);">
+        <div class="pillar-num" style="color:var(--purple);">Pilar 02</div>
+        <div class="pillar-title" style="color:#26215C;">🩺 Cuidado</div>
+        <ul class="pillar-items" style="color:#3C3489;">
+          <li class="pillar-item">Care manager / Enfermeiro Navegador dedicado como porta de entrada</li>
+          <li class="pillar-item">Jornadas por tipo de deficiência: auditiva, física, visual e intelectual têm protocolos distintos</li>
+          <li class="pillar-item">Check-ins proativos via WhatsApp ou app — não espera o sinistro acontecer</li>
+          <li class="pillar-item">Telemedicina com acessibilidade: LIBRAS, legendas, interfaces adaptadas</li>
+          <li class="pillar-item">Mapeamento da rede credenciada acessível (mamógrafos para cadeirantes, etc.)</li>
+        </ul>
+      </div>
+
+      <div class="pillar-card" style="background:var(--coral-light);border-color:rgba(216,90,48,0.2);">
+        <div class="pillar-num" style="color:var(--coral);">Pilar 03</div>
+        <div class="pillar-title" style="color:#4A1B0C;">🤝 Conexão</div>
+        <ul class="pillar-items" style="color:#712B13;">
+          <li class="pillar-item">Grupo / ERG de PCDs no iFood — espaço seguro com pauta própria</li>
+          <li class="pillar-item">Eventos e workshops de saúde focados em acessibilidade</li>
+          <li class="pillar-item">Ciclos de escuta: pesquisas periódicas com os próprios participantes</li>
+          <li class="pillar-item">Kit de boas-vindas físico ao aderir ao programa</li>
+          <li class="pillar-item">Pílulas de conteúdo acessíveis via Slack / WhatsApp (audiodescrição + legendas)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="gatekeeper-box">
+      <div class="gatekeeper-title">A lógica gatekeeper — como reduzir sinistralidade não necessária</div>
+      <div class="gatekeeper-sub">O colaborador não paga coparticipação, mas o cuidado começa pelo navegador — não pelo PS.</div>
+      <div class="gatekeeper-flow">
+        <div class="gk-step">
+          <div class="gk-step-label">Situação</div>
+          <div class="gk-step-title">Colaborador tem sintoma</div>
+          <div class="gk-step-sub">dor, dúvida, agravamento</div>
+        </div>
+        <div class="gk-arrow">→</div>
+        <div class="gk-step highlight">
+          <div class="gk-step-label">1ª porta</div>
+          <div class="gk-step-title">Fala com o Navegador</div>
+          <div class="gk-step-sub">telemedicina ou chat dedicado</div>
+        </div>
+        <div class="gk-arrow">→</div>
+        <div class="gk-step">
+          <div class="gk-step-label">Direcionamento</div>
+          <div class="gk-step-title">Especialista eletivo</div>
+          <div class="gk-step-sub">na rede credenciada acessível</div>
+        </div>
+        <div class="gk-arrow">→</div>
+        <div class="gk-step">
+          <div class="gk-step-label">Resultado</div>
+          <div class="gk-step-title">Cuidado coordenado</div>
+          <div class="gk-step-sub">sem PA, sem exame duplicado</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Jornadas específicas por tipo de deficiência</div>
+    <div class="card-grid-2">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:20px;">♿</span>
+          <div class="card-title">Reabilitação e manutenção funcional</div>
+        </div>
+        <div class="card-body">Acompanhamento contínuo de fisioterapia, fonoaudiologia e terapia ocupacional. Apoio na obtenção de tecnologias assistivas, órteses e próteses quando há cobertura ou parceria.</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:20px;">🧩</span>
+          <div class="card-title">Saúde preventiva adaptada</div>
+        </div>
+        <div class="card-body">Check-ups proativos convocados pelo time de saúde. Rede credenciada com acessibilidade física e equipamentos adaptados. Exames anuais organizados com logística de transporte quando necessário.</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:20px;">🧠</span>
+          <div class="card-title">Saúde mental inclusiva</div>
+        </div>
+        <div class="card-body">Rede de psicólogos treinados nas especificidades da vida com deficiência — capacitismo, esgotamento, ansiedade. Apoio também para líderes e equipes, para garantir ambiente psicologicamente seguro.</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="font-size:20px;">📋</span>
+          <div class="card-title">Cuidado coordenado</div>
+        </div>
+        <div class="card-body">Prontuário centralizado pelo médico de família. Evita duplicação de exames (3 especialistas diferentes pedindo o mesmo exame de sangue no mesmo mês). Reduz sinistro desnecessário sem comprometer a qualidade do cuidado.</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer">
+    <button class="page-nav-btn" onclick="goTo(2)">← Elegibilidade</button>
+    <div class="page-dots" id="dots3"></div>
+    <button class="page-nav-btn primary" onclick="goTo(4)">Etapas →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 5 — ETAPAS
+════════════════════════════════════════ -->
+<div class="page" id="p4">
+  <div class="inner-page">
+    <div class="page-header">
+      <div class="page-eyebrow">◎ Etapas</div>
+      <h1 class="page-title">Jornada do colaborador PCD</h1>
+      <p class="page-desc">Da autodeclaração ao acompanhamento contínuo — seis momentos críticos com o care manager como fio condutor.</p>
+    </div>
+
+    <div class="steps-timeline">
+
+      <!-- Etapa 0 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Desafio zero</div>
+          <div class="step-time-sub">Antes de tudo</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--red);">0</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card">
+            <div class="step-card-header">
+              <div class="step-card-title">Campanha de autodeclaração</div>
+              <span class="pill tag-red">Atração</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--red-light);color:var(--red);">📢</div>
+                Comunicação focada em "Destrave seus benefícios" — não em "declare sua deficiência". A isenção de coparticipação em destaque com valor médio anual economizado.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--teal-light);color:var(--teal);">🔒</div>
+                Garantia LGPD comunicada com clareza: dado não chega ao gestor, nunca aparece em avaliações de performance.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--purple-light);color:var(--purple);">👥</div>
+                Embaixadores internos — PCDs do comitê de D&I dando depoimentos. Canal de declaração aberto continuamente (não apenas ciclo anual).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 1 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Semana 0</div>
+          <div class="step-time-sub">Adesão</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--teal);">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card">
+            <div class="step-card-header">
+              <div class="step-card-title">Autodeclaração confidencial</div>
+              <span class="pill tag-teal">Segurança</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--blue-light);color:var(--blue);">💻</div>
+                Colaborador declara tipo de deficiência via plataforma de benefícios. Dado vai diretamente ao time de Saúde / RH central — sem passar pelo gestor.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--teal-light);color:var(--teal);">✓</div>
+                Isenção de coparticipação ativada automaticamente. Confirmação por e-mail com próximos passos do programa.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 2 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Semanas 1–2</div>
+          <div class="step-time-sub">Acolhimento</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--purple);">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card">
+            <div class="step-card-header">
+              <div class="step-card-title">Entrevista de mapeamento com o care manager</div>
+              <span class="pill tag-purple">1ª contato</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--purple-light);color:var(--purple);">🎤</div>
+                Videoconferência de 45–60 min. Mapeamento: tipo de deficiência, condições associadas, histórico de uso do plano, dificuldades de acesso à rede e necessidades imediatas.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--amber-light);color:var(--amber);">⏱</div>
+                Prazo máximo de 5 dias úteis após a declaração para o 1º contato do care manager.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 3 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Semanas 2–3</div>
+          <div class="step-time-sub">Planejamento</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--amber);">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card">
+            <div class="step-card-header">
+              <div class="step-card-title">Plano de cuidado personalizado</div>
+              <span class="pill tag-amber">Planejamento</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--amber-light);color:var(--amber);">📅</div>
+                Agenda anual de saúde: exames preventivos obrigatórios pela condição, especialistas necessários, fisioterapia / reabilitação se indicados.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--teal-light);color:var(--teal);">🔔</div>
+                Alertas programados no calendário do colaborador. Plano revisável a cada trimestre conforme evolução da condição.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 4 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Mês 1 em diante</div>
+          <div class="step-time-sub">Rotina</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--blue);">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card">
+            <div class="step-card-header">
+              <div class="step-card-title">Acompanhamento contínuo</div>
+              <span class="pill tag-blue">Prevenção ativa</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--teal-light);color:var(--teal);">📱</div>
+                <span><strong>Mensal:</strong> check-in digital assíncrono via plataforma ou WhatsApp. Resposta em até 48h úteis.</span>
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--purple-light);color:var(--purple);">🖥</div>
+                <span><strong>Trimestral:</strong> videoconferência de revisão do plano de cuidado com o care manager.</span>
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--amber-light);color:var(--amber);">📋</div>
+                <span><strong>Anual:</strong> reavaliação completa — exames, especialistas, evolução da condição, revisão de metas.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Etapa 5 -->
+      <div class="step-row">
+        <div class="step-time">
+          <div class="step-time-label">Quando necessário</div>
+          <div class="step-time-sub">Urgência</div>
+        </div>
+        <div class="step-spine">
+          <div class="step-dot" style="background:var(--coral);">!</div>
+          <div class="step-line last"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-card" style="border-color:rgba(216,90,48,0.3);">
+            <div class="step-card-header">
+              <div class="step-card-title">Escalada — quando algo muda</div>
+              <span class="pill tag-coral">Protocolo urgência</span>
+            </div>
+            <div class="step-actions">
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--coral-light);color:var(--coral);">⚡</div>
+                Gatilhos de escalada: agravamento de condição, internação não planejada, sinais de saúde mental, 2+ check-ins sem resposta, solicitação direta do colaborador.
+              </div>
+              <div class="step-action">
+                <div class="step-action-icon" style="background:var(--red-light);color:var(--red);">🏥</div>
+                Canal direto com o care manager (resposta em até 4h úteis). Acionamento de supervisão clínica médica ou psicólogo de retaguarda conforme o caso.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="page-footer">
+    <button class="page-nav-btn" onclick="goTo(3)">← Programa</button>
+    <div class="page-dots" id="dots4"></div>
+    <button class="page-nav-btn primary" onclick="goTo(5)">Métricas →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 6 — MÉTRICAS
+════════════════════════════════════════ -->
+<div class="page" id="p5">
+  <div class="inner-page">
+    <div class="page-header">
+      <div class="page-eyebrow">◎ Métricas</div>
+      <h1 class="page-title">Como medir o sucesso</h1>
+      <p class="page-desc">KPIs em três dimensões — adesão, saúde e financeiro — com cadência de medição e metas-âncora para cada fase do programa.</p>
+    </div>
+
+    <div class="metrics-top">
+      <div class="metric-card">
+        <div class="metric-icon">📈</div>
+        <div class="metric-val" style="color:var(--teal);">↑ Autodecl.</div>
+        <div class="metric-name">Taxa de conversão</div>
+        <div class="metric-desc">% de PCDs declarados após campanha de comunicação</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">🩺</div>
+        <div class="metric-val" style="color:var(--purple);">≥80%</div>
+        <div class="metric-name">Adesão ao navegador</div>
+        <div class="metric-desc">PCDs que fizeram 1ª consulta de mapeamento</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">🏥</div>
+        <div class="metric-val" style="color:var(--amber);">↓ PS</div>
+        <div class="metric-name">Desvio de PS</div>
+        <div class="metric-desc">Redução de idas ao pronto-socorro por baixa complexidade</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">💰</div>
+        <div class="metric-val" style="color:var(--blue);">&lt;75%</div>
+        <div class="metric-name">Razão sinistralidade</div>
+        <div class="metric-desc">Sinistro pago / prêmio PCD — meta de mercado</div>
+      </div>
+    </div>
+
+    <div class="section-label">Dashboard de KPIs</div>
+    <div class="kpi-table">
+      <div class="kpi-table-head">
+        <span>Indicador</span>
+        <span>Frequência</span>
+        <span>Meta</span>
+        <span>Fase</span>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Taxa de autodeclaração</div>
+          <div class="kpi-dim">Adesão · % PCDs declarados / total estimado</div>
+        </div>
+        <div class="kpi-freq">Mensal</div>
+        <div class="kpi-meta">+X% a.a.</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--teal);"></span>Imediato</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Taxa de engajamento ativo</div>
+          <div class="kpi-dim">Adesão · PCDs com check-in nos últimos 90 dias</div>
+        </div>
+        <div class="kpi-freq">Mensal</div>
+        <div class="kpi-meta">≥70%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--teal);"></span>Imediato</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Adesão ao 1º mapeamento</div>
+          <div class="kpi-dim">Adesão · % que realizaram entrevista com care manager</div>
+        </div>
+        <div class="kpi-freq">Mensal</div>
+        <div class="kpi-meta">≥80%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--teal);"></span>Imediato</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Cobertura preventiva</div>
+          <div class="kpi-dim">Saúde · % com exames anuais realizados conforme plano</div>
+        </div>
+        <div class="kpi-freq">Trimestral</div>
+        <div class="kpi-meta">≥75%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--purple);"></span>3 meses</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Condições crônicas controladas</div>
+          <div class="kpi-dim">Saúde · % com doença crônica sob manejo ativo documentado</div>
+        </div>
+        <div class="kpi-freq">Trimestral</div>
+        <div class="kpi-meta">≥65%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--purple);"></span>3 meses</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">NPS do programa</div>
+          <div class="kpi-dim">Adesão · Pesquisa de experiência com participantes</div>
+        </div>
+        <div class="kpi-freq">Semestral</div>
+        <div class="kpi-meta">≥50</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--purple);"></span>6 meses</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Razão de sinistralidade PCD</div>
+          <div class="kpi-dim">Financeiro · Sinistro pago / prêmio do grupo PCD</div>
+        </div>
+        <div class="kpi-freq">Trimestral</div>
+        <div class="kpi-meta">&lt;75%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--amber);"></span>12 meses</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Desvio de pronto-socorro</div>
+          <div class="kpi-dim">Financeiro · Redução de idas ao PS por baixa complexidade vs. ano anterior</div>
+        </div>
+        <div class="kpi-freq">Trimestral</div>
+        <div class="kpi-meta">↓20%</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--amber);"></span>12 meses</div>
+      </div>
+
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Custo per capita PCD vs. non-PCD</div>
+          <div class="kpi-dim">Financeiro · Comparativo de sinistro por vidas antes e depois</div>
+        </div>
+        <div class="kpi-freq">Anual</div>
+        <div class="kpi-meta">Convergência</div>
+        <div class="kpi-status"><span class="status-dot" style="background:var(--blue);"></span>12–24 m.</div>
+      </div>
+
+    </div>
+
+    <div class="alert-box" style="background:var(--teal-light);border-color:rgba(29,158,117,0.2);">
+      <div class="alert-icon" style="background:var(--teal);">💡</div>
+      <div class="alert-text">
+        <strong style="color:#085041;">Atenção ao paradoxo dos primeiros meses</strong>
+        <p style="color:#0F6E56;">O sinistro tende a subir no curto prazo — PCDs engajados fazem mais consultas preventivas e tratamentos represados. O indicador correto não é "sinistro total", mas a composição: menos PA e internação, mais ambulatório e preventivo. Esse mix é a prova de que o programa está funcionando.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="page-footer">
+    <button class="page-nav-btn" onclick="goTo(4)">← Etapas</button>
+    <div class="page-dots" id="dots5"></div>
+    <button class="page-nav-btn primary" onclick="goTo(0)">↑ Voltar ao início</button>
+  </div>
+</div>
+
+<script>
+  const TOTAL = 6;
+  let current = 0;
+
+  const pages = document.querySelectorAll('.page');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const pageLabel = document.getElementById('page-label');
+
+  function renderDots(pageId) {
+    const el = document.getElementById('dots' + pageId);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('div');
+      d.className = 'page-dot' + (i === current ? ' active' : '');
+      d.onclick = () => goTo(i);
+      el.appendChild(d);
+    }
+  }
+
+  function goTo(idx) {
+    pages[current].classList.remove('active');
+    tabs[current].classList.remove('active');
+    current = idx;
+    pages[current].classList.add('active');
+    tabs[current].classList.add('active');
+    pageLabel.textContent = 'Página ' + (current + 1) + ' de ' + TOTAL;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    for (let i = 1; i < TOTAL; i++) renderDots(i);
+  }
+
+  for (let i = 1; i < TOTAL; i++) renderDots(i);
+</script>
+</body>
+</html>
